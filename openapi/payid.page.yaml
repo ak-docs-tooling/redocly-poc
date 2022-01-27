@@ -1,5 +1,5 @@
 type: reference-docs
-definitionId: pay-id
+definitionId: payid
 settings:
   generateCodeSamples:
     languages:
