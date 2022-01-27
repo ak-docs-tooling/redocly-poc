@@ -1,79 +1,70 @@
-openapi: '3.0.0'
+openapi: 3.0.3
+servers:
+  - url: '//petstore.swagger.io/v2'
 info:
-  title: PayID
-  version: '0.0.1'
+  description: >-
+    This is a sample server Petstore server.  You can find out more about
+    Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net,
+    #swagger](http://swagger.io/irc/).  For this sample, you can use the api key
+    `special-key` to test the authorization filters.
+  version: 1.0.0
+  title: Swagger Petstore
+  termsOfService: 'http://swagger.io/terms/'
+  contact:
+    email: apiteam@swagger.io
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+tags:
+  - name: pet
+    description: Everything about your Pets
+    externalDocs:
+      description: Find out more
+      url: 'http://swagger.io'
+  - name: store
+    description: Access to Petstore orders
+  - name: user
+    description: Operations about user
+    externalDocs:
+      description: Find out more about our store
+      url: 'http://swagger.io'
 paths:
-  /invoice:
-    get:
-      summary: get-invoice
-      tags: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/xrpl-devnet+json:
-              schema:
-                $ref: '#/components/schemas/SignatureWrapper_Invoice'
-            application/xrpl-mainnet+json:
-              schema:
-                $ref: '#/components/schemas/SignatureWrapper_Invoice'
-            application/xrpl-testnet+json:
-              schema:
-                $ref: '#/components/schemas/SignatureWrapper_Invoice'
-        '404':
-          description: Not Found
-        '503':
-          description: Service Unavailable
-      operationId: get-path-invoice
-      parameters:
-        - schema:
-            # Typed as a string to get around swagger-codegen issues.
-            # TODO(keefertaylor): Fix after https://github.com/swagger-api/swagger-codegen/issues/10105 is resolved
-            type: string
-          in: query
-          name: nonce
-          description: ''
-          required: true
+  /pet:
     post:
-      summary: post-invoice
-      tags: []
+      tags:
+        - pet
+      summary: Add a new pet to the store
+      description: ''
+      operationId: addPet
       responses:
         '200':
           description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SignatureWrapper_Invoice'
-            application/xrpl-mainnet+json:
-              schema:
-                $ref: '#/components/schemas/SignatureWrapper_Invoice'
-            application/xrpl-testnet+json:
-              schema:
-                $ref: '#/components/schemas/SignatureWrapper_Invoice'
-        '400':
-          description: Bad Request
-        '404':
-          description: Not Found
-        '413':
-          description: Request Entity Too Large
-        '422':
-          description: Unprocessable Entity
-        '451':
-          description: Unavailable due to legal reasons
-        '503':
-          description: Service Unavailable
+        '405':
+          description: Invalid input
+      security:
+        - petstore_auth:
+            - 'write:pets'
+            - 'read:pets'
       requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SignatureWrapper_Compliance'
-      operationId: post-path-invoice
-      parameters:
-        - schema:
-            # Typed as a string to get around swagger-codegen issues.
-            # TODO(keefertaylor): Fix after https://github.com/swagger-api/swagger-codegen/issues/10105 is resolved
-            type: string
-          in: query
-          name: nonce
-          description: ''
-          required: true
+        $ref: '#/components/requestBodies/Pet'
+    put:
+      tags:
+        - pet
+      summary: Update an existing pet
+      description: ''
+      operationId: updatePet
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Pet not found
+        '405':
+          description: Validation exception
+      security:
+        - petstore_auth:
+            - 'write:pets'
+            - 'read:pets'
+      requestBody:
+        $ref: '#/components/requestBodies/Pet'
